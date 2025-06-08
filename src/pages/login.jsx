@@ -9,7 +9,7 @@ import { useAuth } from "../context/AuthContext";
 const login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  const [loading, setLoading] = useState(false);
 
 
   const {
@@ -18,8 +18,8 @@ const login = () => {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    console.log("data", data);
     try {
+      setLoading(true);
       const res = await axiosInstance.post("/users/login", {
         email: data.username,
         password: data.password,
@@ -33,6 +33,8 @@ const login = () => {
     } catch (error) {
       console.log(error?.response?.data?.msg);
       toast.error(error?.response?.data?.msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,6 +70,7 @@ const login = () => {
       </div>
       <button
         type="submit"
+        disabled={loading}
         className="bg-black text-white font-light px-8 py-2 mt-4"
       >
         Login

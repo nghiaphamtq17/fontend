@@ -5,11 +5,11 @@ import Title from "../../../components/Title";
 import ProductItem from "../../../components/ProductItem";
 import axiosInstance from "../../../config/axios";
 import { Pagination, Radio } from "antd";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const defaultLimit = 9;
 
 export default function ListProduct() {
-  const { search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [sortType, setSortType] = useState("relavent");
@@ -20,6 +20,15 @@ export default function ListProduct() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+
+  const [searchParams] = useSearchParams();
+  
+  // Lấy giá trị của tham số 'search'
+  const searchValue = searchParams.get('search');
+
+  console.log('search', searchValue);
+  
+  
 
 
   const getListProducts = async () => {
@@ -32,6 +41,7 @@ export default function ListProduct() {
           page: currentPage,
           limit: defaultLimit,
           category: categoryId,
+          search: searchValue
         },
       })
       .then((res) => {
@@ -65,7 +75,7 @@ export default function ListProduct() {
 
   useEffect(() => {
     getListProducts();
-  }, [currentPage, categoryId]); // khi currentPage, categoryId thay đổi thì gọi lại hàm getListProducts
+  }, [currentPage, categoryId, searchValue]); // khi currentPage, categoryId thay đổi thì gọi lại hàm getListProducts
 
   useEffect(() => {
     getCategory();
